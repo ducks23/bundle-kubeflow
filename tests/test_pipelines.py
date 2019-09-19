@@ -5,6 +5,7 @@ from kfp import Client
 
 from .pipelines.cowsay import cowsay_pipeline
 from .pipelines.mnist import mnist_pipeline
+from .pipelines.object_detection import object_detection_pipeline
 
 
 COWSAY_PARAMS = [{"name": "url", "value": "https://helloacm.com/api/fortune/"}]
@@ -31,10 +32,18 @@ MNIST_PARAMS = [
     },
 ]
 
+OBJ_DET_PARAMS = []
+
 
 @pytest.mark.parametrize(
     'name,params,fn',
-    [('mnist', MNIST_PARAMS, mnist_pipeline), ('cowsay', COWSAY_PARAMS, cowsay_pipeline)],
+    [
+        ('mnist', MNIST_PARAMS, mnist_pipeline),
+        ('cowsay', COWSAY_PARAMS, cowsay_pipeline),
+        pytest.param(
+            'object_detection', OBJ_DET_PARAMS, object_detection_pipeline, marks=pytest.mark.gpu
+        ),
+    ],
 )
 def test_pipelines(name: str, params: list, fn: Callable):
     """Runs each pipeline that it's been parameterized for, and waits for it to succeed."""
@@ -43,6 +52,6 @@ def test_pipelines(name: str, params: list, fn: Callable):
     run = client.create_run_from_pipeline_func(
         fn, arguments={p['name']: p['value'] for p in params}
     )
-    completed = client.wait_for_run_completion(run.run_id, timeout=1200)
+    completed = client.wait_for_run_completion(run.run_id, timeout=3600)
     status = completed.to_dict()['run']['status']
-    assert status == 'Succeeded', f'Pipeline status is {status}'
+    assert status == 'Succeeded', f'Pipeline {name} status is {status}'
