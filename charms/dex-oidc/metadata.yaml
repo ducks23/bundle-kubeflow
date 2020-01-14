@@ -1,0 +1,16 @@
+name: dex-oidc
+display-name: Dex OIDC
+summary: Dex OIDC
+description: Dex OIDC
+maintainers: [Juju Developers <juju@lists.ubuntu.com>]
+tags: [kubernetes, certificates]
+series: [kubernetes]
+resources:
+  oci-image:
+    type: oci-image
+    description: 'Backing OCI image'
+    auto-fetch: true
+    upstream-source: gcr.io/arrikto/kubeflow/oidc-authservice:v0.3
+provides:
+  oidc-client:
+    interface: oidc-client

@@ -1,0 +1,12 @@
+bundle: kubernetes
+applications:
+  dex-core:
+    charm: cs:~kubeflow-charmers/dex-core
+    source: ./charms/dex-core
+    scale: 1
+  dex-oidc:
+    charm: cs:~kubeflow-charmers/dex-oidc
+    source: ./charms/dex-oidc
+    scale: 1
+relations:
+- [dex-core, dex-oidc]

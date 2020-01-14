@@ -1,0 +1,16 @@
+name: dex-core
+display-name: Dex Core
+summary: Dex Core
+description: Dex Core
+maintainers: [Juju Developers <juju@lists.ubuntu.com>]
+tags: [kubernetes, certificates]
+series: [kubernetes]
+resources:
+  oci-image:
+    type: oci-image
+    description: 'Backing OCI image'
+    auto-fetch: true
+    upstream-source: quay.io/coreos/dex:v2.9.0
+requires:
+  oidc-client:
+    interface: oidc-client
