@@ -220,7 +220,7 @@ def deploy_to(controller, cloud, model, channel, build, overlays, password):
     password_overlay = {
         "applications": {
             "katib-db": {"options": {"root_password": get_random_pass()}},
-            "kubeflow-gatekeeper": {"options": {"password": password}},
+            # "kubeflow-gatekeeper": {"options": {"password": password}},
             "modeldb-db": {"options": {"root_password": get_random_pass()}},
             "pipelines-api": {"options": {"minio-secret-key": "minio123"}},
             "pipelines-db": {"options": {"root_password": get_random_pass()}},
