@@ -79,6 +79,58 @@ Next, you can run these commands to set up Charmed Kubernetes:
     python3 scripts/cli.py ck setup --controller ckkf
     python3 scripts/cli.py deploy-to ckkf
 
+## Authentication
+
+By default, this bundle deploys the `kubeflow-gatekeeper` service to manage
+authentication with HTTP Basic Auth. If you'd like a more full-featured
+solution, you can deploy the `charms/dex-core` and `charms/dex-oidc` charms. A
+brief example of how to deploy them and configure them for LDAP:
+
+```
+juju add-model auth
+juju bundle deploy -b bundle-auth.yaml --build
+juju config dex-oidc public-url=http://$PUBLIC_URL:80
+juju config dex-oidc client-secret=foobar
+juju config dex-core public-url=http://$PUBLIC_URL:80
+juju config dex-core connectors='$CONNECTOR_CONFIG'
+```
+
+Where `$PUBLIC_URL` is the publicly-accessible endpoint that your cluster is
+available at, and `$CONNECTOR_CONFIG` is a JSON string that looks something
+like this:
+
+```json
+[{
+    "id": "ldap",
+    "name": "OpenLDAP",
+    "type": "ldap",
+    "config": {
+        "bindDN": "cn=admin,dc=example,dc=org",
+        "bindPW": "admin",
+        "groupSearch": {
+            "baseDN": "cn=admin,dc=example,dc=org",
+            "filter": "",
+            "groupAttr": "DN",
+            "nameAttr": "cn",
+            "userAttr": "DN"
+        },
+        "host": "ldap-service.auth.svc.cluster.local:389",
+        "insecureNoSSL": true,
+        "userSearch": {
+            "baseDN": "cn=admin,dc=example,dc=org",
+            "emailAttr": "DN",
+            "filter": "",
+            "idAttr": "DN",
+            "nameAttr": "cn",
+            "username": "cn"
+        },
+        "usernamePrompt": "Email Address"
+    }
+}]
+'
+```
+
+For a more thorough example, see https://github.com/dexidp/dex/tree/master/examples
 
 ## Using
 
