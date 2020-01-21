@@ -12,6 +12,14 @@ applications:
     charm: cs:~kubeflow-charmers/argo-ui
     source: ./charms/argo-ui
     scale: 1
+  dex-core:
+    charm: cs:~kubeflow-charmers/dex-core
+    source: ./charms/dex-core
+    scale: 1
+  dex-oidc:
+    charm: cs:~kubeflow-charmers/dex-oidc
+    source: ./charms/dex-oidc
+    scale: 1
   jupyter-controller:
     charm: cs:~kubeflow-charmers/jupyter-controller
     source: ./charms/jupyter-controller
@@ -23,10 +31,6 @@ applications:
   kubeflow-dashboard:
     charm: cs:~kubeflow-charmers/kubeflow-dashboard
     source: ./charms/kubeflow-dashboard
-    scale: 1
-  kubeflow-gatekeeper:
-    charm: cs:~kubeflow-charmers/kubeflow-gatekeeper
-    source: ./charms/kubeflow-gatekeeper
     scale: 1
   kubeflow-login:
     charm: cs:~kubeflow-charmers/kubeflow-login

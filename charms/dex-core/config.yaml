@@ -13,3 +13,11 @@ options:
     description: |
       List of connectors in YAML format, as shown
       in https://github.com/dexidp/dex#connectors
+  static-username:
+    type: string
+    default: ''
+    description: Static username for logging in without an external auth service
+  static-password:
+    type: string
+    default: ''
+    description: Static password for logging in without an external auth service

@@ -81,23 +81,18 @@ Next, you can run these commands to set up Charmed Kubernetes:
 
 ## Authentication
 
-By default, this bundle deploys the `kubeflow-gatekeeper` service to manage
-authentication with HTTP Basic Auth. If you'd like a more full-featured
-solution, you can deploy the `charms/dex-core` and `charms/dex-oidc` charms. A
-brief example of how to deploy them and configure them for LDAP:
+By default, this bundle deploys Dex configured with basic login credentials.
+Dex is able to user other services for authentication, such as GitHub's OAuth
+service. To configure Kubeflow to use one of these other services for
+authentication, check out the [Dex documentation][dex-docs]. The YAML shown in
+those examples should be configured with:
 
-```
-juju add-model auth
-juju bundle deploy -b bundle-auth.yaml --build
-juju config dex-oidc public-url=http://$PUBLIC_URL:80
-juju config dex-oidc client-secret=foobar
-juju config dex-core public-url=http://$PUBLIC_URL:80
-juju config dex-core connectors='$CONNECTOR_CONFIG'
-```
+    juju config dex-core connectors="$CONNECTOR_YAML"
 
-Where `$PUBLIC_URL` is the publicly-accessible endpoint that your cluster is
-available at, and `$CONNECTOR_CONFIG` is a JSON string that looks something
-like this:
+[dex-docs]: https://github.com/dexidp/dex/tree/master/Documentation/connectors
+
+As an example, this is what you might use for `$CONNECTOR_YAML` if you are
+deploying with support for LDAP:
 
 ```json
 [{
@@ -130,7 +125,10 @@ like this:
 '
 ```
 
-For a more thorough example, see https://github.com/dexidp/dex/tree/master/examples
+For more thorough examples, see https://github.com/dexidp/dex/tree/master/examples
+If you'd like to disable the default basic credentials, run:
+
+    juju config dex-core static-username='' static-password=''
 
 ## Using
 

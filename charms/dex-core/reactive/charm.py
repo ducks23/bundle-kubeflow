@@ -1,11 +1,12 @@
-from pathlib import Path
 import os
-
+from pathlib import Path
+from uuid import uuid4
+import bcrypt
 import yaml
 
-from charms import layer
-from charms.reactive import clear_flag, hook, set_flag, when, when_any, when_not, endpoint_from_name
 from charmhelpers.core import hookenv
+from charms import layer
+from charms.reactive import clear_flag, endpoint_from_name, hook, set_flag, when, when_any, when_not
 
 
 @hook("upgrade-charm")
@@ -31,11 +32,36 @@ def start_charm():
     image_info = layer.docker_resource.get_info("oci-image")
 
     service_name = hookenv.service_name()
-    namespace = os.environ["JUJU_MODEL_NAME"]
     connectors = yaml.safe_load(hookenv.config("connectors"))
+    namespace = os.environ["JUJU_MODEL_NAME"]
+    oidc_client_info = endpoint_from_name('oidc-client').get_config()
     port = hookenv.config("port")
     public_url = hookenv.config("public-url")
-    oidc_client_info = endpoint_from_name('oidc-client').get_config()
+
+    # Allows setting a basic username/password combo
+    static_username = hookenv.config("static-username")
+    static_password = hookenv.config("static-password")
+
+    static_config = {}
+
+    if static_username:
+        if not static_password:
+            layer.status.blocked('Static password is required when static username is set')
+            return False
+
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(static_password.encode('utf-8'), salt).decode('utf-8')
+        static_config = {
+            'enablePasswordDB': True,
+            'staticPasswords': [
+                {
+                    'email': static_username,
+                    'hash': hashed,
+                    'username': static_username,
+                    'userID': str(uuid4()),
+                }
+            ],
+        }
 
     layer.caas_base.pod_spec_set(
         {
@@ -96,6 +122,7 @@ def start_charm():
                                         "oauth2": {"skipApprovalScreen": True},
                                         "staticClients": oidc_client_info,
                                         "connectors": connectors,
+                                        **static_config,
                                     }
                                 )
                             },

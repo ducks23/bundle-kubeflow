@@ -21,6 +21,14 @@ applications:
     annotations:
       gui-x: '300'
       gui-y: '0'
+  dex-core:
+    charm: cs:~kubeflow-charmers/dex-core
+    source: ./charms/dex-core
+    scale: 1
+  dex-oidc:
+    charm: cs:~kubeflow-charmers/dex-oidc
+    source: ./charms/dex-oidc
+    scale: 1
   jupyter-controller:
     charm: cs:~kubeflow-charmers/jupyter-controller
     source: ./charms/jupyter-controller
@@ -71,13 +79,6 @@ applications:
     annotations:
       gui-x: '750'
       gui-y: '259'
-  # kubeflow-gatekeeper:
-    # charm: cs:~kubeflow-charmers/kubeflow-gatekeeper
-    # source: ./charms/kubeflow-gatekeeper
-    # scale: 1
-    # annotations:
-      # gui-x: '600'
-      # gui-y: '-518'
   kubeflow-login:
     charm: cs:~kubeflow-charmers/kubeflow-login
     source: ./charms/kubeflow-login
@@ -224,6 +225,7 @@ relations:
 - [ambassador, pipelines-viewer]
 - [ambassador, tf-job-dashboard]
 - [argo-controller, minio]
+- [dex-core, dex-oidc]
 - [katib-manager, katib-db]
 - [kubeflow-profiles, kubeflow-dashboard]
 - [metadata, metadata-db]

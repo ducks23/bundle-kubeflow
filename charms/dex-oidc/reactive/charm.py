@@ -88,10 +88,12 @@ def start_charm():
                         "DISABLE_USERINFO": True,
                         "OIDC_PROVIDER": f"{public_url}/dex",
                         "OIDC_SCOPES": oidc_scopes,
-                        "PORT": port,
+                        "SERVER_PORT": port,
                         "SELF_URL": f"{public_url}/oidc",
                         "USERID_HEADER": "kubeflow-userid",
                         "USERID_PREFIX": "",
+                        "STORE_PATH": "bolt.db",
+                        "REDIRECT_URL": f"{public_url}/oidc/login/oidc",
                     },
                 }
             ],
